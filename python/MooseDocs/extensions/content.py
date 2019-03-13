@@ -71,6 +71,7 @@ class ContentExtension(command.CommandExtension):
         for node in nodes:
             h_node = heading.find_heading(self.translator, node)
 
+
             if h_node is None:
                 pass
                 #msg = "The page, '%s', does not have a title, it will be ignored in the " \
@@ -104,10 +105,12 @@ class ContentCommand(command.CommandComponent):
         settings = command.CommandComponent.defaultSettings()
         settings['location'] = (None, "The markdown content directory to build contents.")
         settings['level'] = (2, 'Heading level for top-level headings.')
+        settings['filename'] = (False, "Name links by filename instead of top level heading") 
         return settings
 
     def createToken(self, parent, info, page):
-        ContentToken(parent, location=self.settings['location'], level=self.settings['level'])
+        ContentToken(parent, location=self.settings['location'], level=self.settings['level'],
+                     filename=self.settings['filename'])
         return parent
 
 class AtoZCommand(command.CommandComponent):
