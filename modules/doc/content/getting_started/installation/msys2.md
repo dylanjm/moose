@@ -87,31 +87,12 @@ export PETSC_ARCH=msys2
 ### PETSc `make getlinklibs`
 
 `make getlinklibs` is used by libMesh to gather a set of libraries and library
-directories that PETSc config already discoverd for us. Unfortunately it is a bit buggy.
+directories that PETSc config already discovered for us. Unfortunately it is a bit buggy.
 
-Run
-
-```
-make getlinklibs
-```
-
-and copy the resulting string. Next open `lib/petsc/conf/rules` and search for
-the `getlinklibs` rule, which should look like this:
-
-```
-getlinklibs:
-       -@echo  ${C_SH_LIB_PATH} ${PETSC_TS_LIB}
-```
-
-and replace the two variables with the string you copied above, removing the
-strings `/C:msys64mingw64lib` and `-LC:msys64mingw64lib` (the first one is attached
-to the end of a path that you will need to keep!). Your result should look
-somewhat like this:
-
-```
-getlinklibs:
-       -@echo "-Wl,-rpath,C:/msys64/home/daniel/projects/moose/petsc/msys2/lib -LC:/msys64/home/daniel/projects/moose/petsc/msys2/lib -Wl,-rpath,/usr/local/petsc/lib -L/usr/local/petsc/lib -Wl,-rpath,/mingw64/lib -L/mingw64/lib -L/home/daniel/projects/moose/petsc -LC:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/9.2.0 -LC:/msys64/mingw64/lib/gcc -LC:/msys64/mingw64/x86_64-w64-mingw32/lib -LC:/msys64/mingw64/lib -lpetsc -lHYPRE -lopenblas -lparmetis -lmetis -lmsmpi -lstdc++ -lgfortran -lgcc_s -lquadmath -lm -lgdi32 -luser32 -ladvapi32 -lkernel32 -lquadmath -lstdc++ -lmsmpi -lssp_nonshared -lssp -lmingw32 -lgcc_eh -lmoldname -lmingwex -lmsvcrt -lpthread -ladvapi32 -lshell32 -luser32"
-```
+Edit the file  `$PETSC_DIR/$PETSC_ARCH/lib/petsc/conf/petscvariables`
+and remove the strings `/C:msys64mingw64lib` and `-LC:msys64mingw64lib` (the first one is attached
+to the end of a path that you will need to keep!). And make sure the paths in
+`PETSC_WITH_EXTERNAL_LIB` all use forward slashes.
 
 ## libMesh
 
@@ -187,5 +168,5 @@ tests. MSYS2 does not support symlinks, so we need to disable `MOOSE_HEADER_SYML
 
 ```
 cd $MOOSE_DIR/test
-MOOSE_HEADER_SYMLINKS=false make
+MOOSE_HEADER_SYMLINKS=false MOOSE_UNITY=false make
 ```
